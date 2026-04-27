@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NoteSpark AI Summarizer</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f6f8fc;
+      color: #1f2937;
+    }
+
+    header {
+      background: white;
+      padding: 18px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 12px #00000012;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      color: #2563eb;
+    }
+
+    .tag {
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 45px 20px 25px;
+    }
+
+    .hero h1 {
+      font-size: 42px;
+      margin: 0;
+    }
+
+    .hero p {
+      font-size: 18px;
+      color: #64748b;
+    }
+
+    .app {
+      width: min(1100px, 94%);
+      margin: auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      padding-bottom: 40px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 22px;
+      padding: 22px;
+      box-shadow: 0 10px 30px #00000012;
+      border: 1px solid #e5e7eb;
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 22px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 360px;
+      resize: vertical;
+      border: 1px solid #cbd5e1;
+      border-radius: 16px;
+      padding: 16px;
+      font-size: 16px;
+      outline: none;
+      line-height: 1.5;
+    }
+
+    textarea:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 4px #2563eb20;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    button, select {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    button {
+      background: #2563eb;
+      color: white;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    .secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    select {
+      background: #eef2ff;
+      color: #1e3a8a;
+    }
+
+    .output {
+      min-height: 360px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 16px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    .stats {
+      margin-top: 15px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .stat {
+      background: #eff6ff;
+      padding: 12px;
+      border-radius: 14px;
+      text-align: center;
+      color: #1e40af;
+      font-weight: bold;
+    }
+
+    .stat span {
+      display: block;
+      font-size: 12px;
+      color: #64748b;
+      font-weight: normal;
+      margin-top: 4px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #64748b;
+    }
+
+    @media (max-width: 800px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .hero h1 {
+        font-size: 32px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">NoteSpark</div>
+  <div class="tag">AI Note Summarizer</div>
+</header>
+
+<section class="hero">
+  <h1>Summarize notes instantly</h1>
+  <p>Paste long notes, articles, or homework text and turn them into a clean summary.</p>
+</section>
+
+<main class="app">
+  <section class="card">
+    <h2>Your Notes</h2>
+    <textarea id="inputText" placeholder="Paste your notes here..."></textarea>
+
+    <div class="controls">
+      <select id="summarySize">
+        <option value="3">Short Summary</option>
+        <option value="5" selected>Medium Summary</option>
+        <option value="8">Detailed Summary</option>
+      </select>
+
+      <button onclick="summarizeText()">Summarize</button>
+      <button class="secondary" onclick="clearAll()">Clear</button>
+    </div>
+
+    <div class="stats">
+      <div class="stat" id="wordCount">0<span>Words</span></div>
+      <div class="stat" id="sentenceCount">0<span>Sentences</span></div>
+      <div class="stat" id="readingTime">0<span>Min Read</span></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Summary</h2>
+    <div class="output" id="outputText">Your summary will appear here.</div>
+
+    <div class="controls">
+      <button onclick="copySummary()">Copy Summary</button>
+      <button class="secondary" onclick="downloadSummary()">Download .txt</button>
+    </div>
+  </section>
+</main>
+
+<footer>
+  NoteSpark runs fully in your browser. No login needed.
+</footer>
+
+<script>
+  const input = document.getElementById("inputText");
+  const output = document.getElementById("outputText");
+
+  input.addEventListener("input", updateStats);
+
+  function updateStats() {
+    const text = input.value.trim();
+    const words = text ? text.split(/\s+/).length : 0;
+    const sentences = text ? text.split(/[.!?]+/).filter(s => s.trim().length > 0).length : 0;
+    const minutes = Math.max(1, Math.ceil(words / 200));
+
+    document.getElementById("wordCount").innerHTML = words + "<span>Words</span>";
+    document.getElementById("sentenceCount").innerHTML = sentences + "<span>Sentences</span>";
+    document.getElementById("readingTime").innerHTML = (words ? minutes : 0) + "<span>Min Read</span>";
+  }
+
+  function summarizeText() {
+    const text = input.value.trim();
+    const amount = parseInt(document.getElementById("summarySize").value);
+
+    if (!text) {
+      output.textContent = "Paste some notes first.";
+      return;
+    }
+
+    const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
+
+    if (sentences.length <= amount) {
+      output.textContent = text;
+      return;
+    }
+
+    const stopWords = new Set([
+      "the","is","a","an","and","or","to","of","in","on","for","with","as","by",
+      "at","from","this","that","it","be","are","was","were","has","have","had",
+      "you","your","we","they","he","she","his","her","their","our","but","not"
+    ]);
+
+    const words = text
+      .toLowerCase()
+      .replace(/[^\w\s]/g, "")
+      .split(/\s+/)
+      .filter(word => word.length > 3 && !stopWords.has(word));
+
+    const frequency = {};
+    words.forEach(word => frequency[word] = (frequency[word] || 0) + 1);
+
+    const scored = sentences.map((sentence, index) => {
+      const sentenceWords = sentence
+        .toLowerCase()
+        .replace(/[^\w\s]/g, "")
+        .split(/\s+/);
+
+      let score = 0;
+      sentenceWords.forEach(word => {
+        if (frequency[word]) score += frequency[word];
+      });
+
+      if (index === 0) score += 3;
+      if (sentence.length < 250) score += 1;
+
+      return { sentence: sentence.trim(), score, index };
+    });
+
+    const best = scored
+      .sort((a, b) => b.score - a.score)
+      .slice(0, amount)
+      .sort((a, b) => a.index - b.index)
+      .map(item => "• " + item.sentence)
+      .join("\n\n");
+
+    output.textContent = best;
+  }
+
+  function copySummary() {
+    navigator.clipboard.writeText(output.textContent);
+    alert("Summary copied!");
+  }
+
+  function downloadSummary() {
+    const blob = new Blob([output.textContent], { type: "text/plain" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "summary.txt";
+    link.click();
+  }
+
+  function clearAll() {
+    input.value = "";
+    output.textContent = "Your summary will appear here.";
+    updateStats();
+  }
+</script>
+
+</body>
+</html>
