@@ -1,324 +1,440 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NoteSpark AI Summarizer</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f6f8fc;
-      color: #1f2937;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OddNest Expanded</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
 
-    header {
-      background: white;
-      padding: 18px 30px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 2px 12px #00000012;
-      position: sticky;
-      top: 0;
-      z-index: 5;
-    }
+body{
+background:#17130f;
+color:#f6e9d2;
+font-family:Georgia,serif;
+overflow-x:hidden;
+}
 
-    .logo {
-      font-size: 24px;
-      font-weight: bold;
-      color: #2563eb;
-    }
+body:before{
+content:"";
+position:fixed;
+inset:0;
+background-image:
+radial-gradient(circle,#ffffff18 1px,transparent 1px);
+background-size:30px 30px;
+opacity:.2;
+pointer-events:none;
+}
 
-    .tag {
-      color: #64748b;
-      font-size: 14px;
-    }
+header{
+padding:30px 7%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+position:sticky;
+top:0;
+backdrop-filter:blur(8px);
+background:#17130fc9;
+z-index:5;
+}
 
-    .hero {
-      text-align: center;
-      padding: 45px 20px 25px;
-    }
+.logo{
+font-size:34px;
+font-weight:bold;
+letter-spacing:2px;
+}
 
-    .hero h1 {
-      font-size: 42px;
-      margin: 0;
-    }
+nav button{
+background:none;
+color:#f6e9d2;
+border:1px solid #9c6940;
+padding:12px 18px;
+border-radius:40px;
+margin-left:10px;
+cursor:pointer;
+transition:.2s;
+}
 
-    .hero p {
-      font-size: 18px;
-      color: #64748b;
-    }
+nav button:hover{
+background:#9c6940;
+transform:rotate(-2deg) scale(1.05);
+}
 
-    .app {
-      width: min(1100px, 94%);
-      margin: auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 22px;
-      padding-bottom: 40px;
-    }
+.hero{
+min-height:90vh;
+display:grid;
+grid-template-columns:1.1fr .9fr;
+align-items:center;
+padding:70px 8%;
+gap:40px;
+}
 
-    .card {
-      background: white;
-      border-radius: 22px;
-      padding: 22px;
-      box-shadow: 0 10px 30px #00000012;
-      border: 1px solid #e5e7eb;
-    }
+h1{
+font-size:clamp(60px,10vw,130px);
+line-height:.85;
+}
 
-    h2 {
-      margin-top: 0;
-      font-size: 22px;
-    }
+.hero p{
+margin:30px 0;
+font-size:21px;
+max-width:550px;
+color:#d7c5a9;
+}
 
-    textarea {
-      width: 100%;
-      height: 360px;
-      resize: vertical;
-      border: 1px solid #cbd5e1;
-      border-radius: 16px;
-      padding: 16px;
-      font-size: 16px;
-      outline: none;
-      line-height: 1.5;
-    }
+.main-btn{
+background:#f3a541;
+border:none;
+padding:18px 28px;
+font-size:20px;
+border-radius:20px;
+cursor:pointer;
+box-shadow:8px 8px 0 #5c3522;
+transition:.15s;
+}
 
-    textarea:focus {
-      border-color: #2563eb;
-      box-shadow: 0 0 0 4px #2563eb20;
-    }
+.main-btn:active{
+transform:translate(8px,8px);
+box-shadow:none;
+}
 
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 15px;
-    }
+.blob-wrap{
+display:flex;
+justify-content:center;
+position:relative;
+}
 
-    button, select {
-      border: none;
-      border-radius: 12px;
-      padding: 12px 16px;
-      font-size: 15px;
-      cursor: pointer;
-    }
+.blob{
+width:min(420px,80vw);
+height:420px;
+background:
+linear-gradient(135deg,#f3a541,#6abf9d,#8d63ff);
+border-radius:48% 52% 63% 37%;
+animation:wobble 6s infinite alternate ease-in-out;
+box-shadow:0 0 90px #f3a54155;
+}
 
-    button {
-      background: #2563eb;
-      color: white;
-      font-weight: bold;
-    }
+@keyframes wobble{
+from{
+border-radius:48% 52% 63% 37%;
+transform:rotate(-4deg);
+}
+to{
+border-radius:64% 36% 42% 58%;
+transform:rotate(9deg);
+}
+}
 
-    button:hover {
-      background: #1d4ed8;
-    }
+.orbit{
+position:absolute;
+border:2px dashed #ffffff25;
+border-radius:50%;
+animation:spin 18s linear infinite;
+}
 
-    .secondary {
-      background: #e5e7eb;
-      color: #111827;
-    }
+.orbit1{
+width:520px;height:520px;
+}
+.orbit2{
+width:620px;height:620px;
+animation-duration:30s;
+animation-direction:reverse;
+}
 
-    select {
-      background: #eef2ff;
-      color: #1e3a8a;
-    }
+.dot{
+position:absolute;
+width:18px;
+height:18px;
+background:#fff;
+border-radius:50%;
+top:-8px;
+left:50%;
+}
 
-    .output {
-      min-height: 360px;
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 16px;
-      padding: 16px;
-      line-height: 1.6;
-      white-space: pre-wrap;
-    }
+@keyframes spin{
+to{transform:rotate(360deg);}
+}
 
-    .stats {
-      margin-top: 15px;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-    }
+section{
+padding:90px 8%;
+}
 
-    .stat {
-      background: #eff6ff;
-      padding: 12px;
-      border-radius: 14px;
-      text-align: center;
-      color: #1e40af;
-      font-weight: bold;
-    }
+.cards{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:25px;
+}
 
-    .stat span {
-      display: block;
-      font-size: 12px;
-      color: #64748b;
-      font-weight: normal;
-      margin-top: 4px;
-    }
+.card{
+background:#241b15;
+border:1px solid #5b3c2a;
+padding:30px;
+border-radius:30px;
+transition:.2s;
+}
 
-    footer {
-      text-align: center;
-      padding: 20px;
-      color: #64748b;
-    }
+.card:hover{
+transform:translateY(-10px) rotate(1deg);
+}
 
-    @media (max-width: 800px) {
-      .app {
-        grid-template-columns: 1fr;
-      }
+.card h2{
+color:#f3a541;
+margin-bottom:15px;
+}
 
-      .hero h1 {
-        font-size: 32px;
-      }
-    }
-  </style>
+.big-band{
+background:#101916;
+border-top:2px dashed #6abf9d;
+border-bottom:2px dashed #6abf9d;
+}
+
+.shelf{
+display:flex;
+gap:20px;
+overflow:auto;
+padding-bottom:10px;
+}
+
+.item{
+min-width:240px;
+background:#1b2d29;
+border:1px solid #6abf9d;
+padding:25px;
+border-radius:26px;
+}
+
+.item .emoji{
+font-size:58px;
+}
+
+.quote{
+margin-top:60px;
+font-size:30px;
+border-left:8px solid #8d63ff;
+padding-left:20px;
+max-width:800px;
+}
+
+.gallery{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:18px;
+margin-top:50px;
+}
+
+.tile{
+aspect-ratio:1;
+border-radius:30px;
+display:grid;
+place-items:center;
+font-size:45px;
+cursor:pointer;
+transition:.2s;
+}
+
+.tile:nth-child(1){background:#f3a541;}
+.tile:nth-child(2){background:#6abf9d;}
+.tile:nth-child(3){background:#8d63ff;}
+.tile:nth-child(4){background:#ff7d93;}
+
+.tile:hover{
+transform:rotate(4deg) scale(1.05);
+}
+
+footer{
+padding:60px;
+text-align:center;
+color:#b2967a;
+}
+
+.floatbtn{
+position:fixed;
+right:20px;
+bottom:20px;
+width:60px;
+height:60px;
+border:none;
+border-radius:50%;
+background:#8d63ff;
+color:white;
+font-size:28px;
+cursor:pointer;
+box-shadow:0 0 30px #8d63ff77;
+}
+
+#msg{
+margin-top:20px;
+font-size:22px;
+color:#f3a541;
+}
+
+@media(max-width:900px){
+.hero{
+grid-template-columns:1fr;
+}
+.cards{
+grid-template-columns:1fr;
+}
+.gallery{
+grid-template-columns:repeat(2,1fr);
+}
+}
+</style>
 </head>
 <body>
 
 <header>
-  <div class="logo">NoteSpark</div>
-  <div class="tag">AI Note Summarizer</div>
+<div class="logo">OddNest</div>
+
+<nav>
+<button onclick="jump('ideas')">Ideas</button>
+<button onclick="jump('shelf')">Shelf</button>
+<button onclick="jump('play')">Play</button>
+</nav>
 </header>
 
 <section class="hero">
-  <h1>Summarize notes instantly</h1>
-  <p>Paste long notes, articles, or homework text and turn them into a clean summary.</p>
+<div>
+<h1>Stuff<br>lives<br>here.</h1>
+
+<p>
+Same blob universe... just expanded.
+More strange corners. More things to poke.
+</p>
+
+<button class="main-btn" onclick="randomMsg()">
+Press Something
+</button>
+
+<div id="msg"></div>
+</div>
+
+<div class="blob-wrap">
+
+<div class="orbit orbit1">
+<div class="dot"></div>
+</div>
+
+<div class="orbit orbit2">
+<div class="dot"></div>
+</div>
+
+<div class="blob"></div>
+
+</div>
 </section>
 
-<main class="app">
-  <section class="card">
-    <h2>Your Notes</h2>
-    <textarea id="inputText" placeholder="Paste your notes here..."></textarea>
+<section id="ideas">
+<div class="cards">
 
-    <div class="controls">
-      <select id="summarySize">
-        <option value="3">Short Summary</option>
-        <option value="5" selected>Medium Summary</option>
-        <option value="8">Detailed Summary</option>
-      </select>
+<div class="card">
+<h2>Lost Drawer</h2>
+Forgotten objects with backstories.
+</div>
 
-      <button onclick="summarizeText()">Summarize</button>
-      <button class="secondary" onclick="clearAll()">Clear</button>
-    </div>
+<div class="card">
+<h2>Quiet Radio</h2>
+Plays imaginary frequencies.
+</div>
 
-    <div class="stats">
-      <div class="stat" id="wordCount">0<span>Words</span></div>
-      <div class="stat" id="sentenceCount">0<span>Sentences</span></div>
-      <div class="stat" id="readingTime">0<span>Min Read</span></div>
-    </div>
-  </section>
+<div class="card">
+<h2>Window Plant</h2>
+Probably knows your secrets.
+</div>
 
-  <section class="card">
-    <h2>Summary</h2>
-    <div class="output" id="outputText">Your summary will appear here.</div>
+</div>
 
-    <div class="controls">
-      <button onclick="copySummary()">Copy Summary</button>
-      <button class="secondary" onclick="downloadSummary()">Download .txt</button>
-    </div>
-  </section>
-</main>
+<div class="quote">
+“Websites can feel like little places.”
+</div>
+</section>
+
+<section class="big-band" id="shelf">
+<h1 style="font-size:60px;margin-bottom:35px;">
+The Shelf
+</h1>
+
+<div class="shelf">
+<div class="item">
+<div class="emoji">🕯</div>
+Half Candle
+</div>
+
+<div class="item">
+<div class="emoji">📼</div>
+Mystery Tape
+</div>
+
+<div class="item">
+<div class="emoji">🪑</div>
+Tiny Chair
+</div>
+
+<div class="item">
+<div class="emoji">🧃</div>
+Box Juice
+</div>
+</div>
+
+</section>
+
+<section id="play">
+<h1 style="font-size:55px">
+Click the tiles
+</h1>
+
+<div class="gallery">
+<div class="tile" onclick="explode(this)">✦</div>
+<div class="tile" onclick="explode(this)">☼</div>
+<div class="tile" onclick="explode(this)">✸</div>
+<div class="tile" onclick="explode(this)">◉</div>
+</div>
+</section>
 
 <footer>
-  NoteSpark runs fully in your browser. No login needed.
+Made slightly crooked on purpose.
 </footer>
 
+<button class="floatbtn" onclick="shake()">
+↻
+</button>
+
 <script>
-  const input = document.getElementById("inputText");
-  const output = document.getElementById("outputText");
+const msgs=[
+"The blob approves.",
+"A pigeon reviewed this website.",
+"Suspicious magic detected.",
+"You unlocked nothing.",
+"The orbit noticed you."
+];
 
-  input.addEventListener("input", updateStats);
+function randomMsg(){
+document.getElementById("msg").innerText=
+msgs[Math.floor(Math.random()*msgs.length)];
+}
 
-  function updateStats() {
-    const text = input.value.trim();
-    const words = text ? text.split(/\s+/).length : 0;
-    const sentences = text ? text.split(/[.!?]+/).filter(s => s.trim().length > 0).length : 0;
-    const minutes = Math.max(1, Math.ceil(words / 200));
+function jump(id){
+document.getElementById(id).scrollIntoView({
+behavior:"smooth"
+});
+}
 
-    document.getElementById("wordCount").innerHTML = words + "<span>Words</span>";
-    document.getElementById("sentenceCount").innerHTML = sentences + "<span>Sentences</span>";
-    document.getElementById("readingTime").innerHTML = (words ? minutes : 0) + "<span>Min Read</span>";
-  }
+function shake(){
+document.body.animate([
+{transform:"rotate(0deg)"},
+{transform:"rotate(1deg)"},
+{transform:"rotate(-1deg)"},
+{transform:"rotate(0deg)"}
+],{
+duration:500
+});
+}
 
-  function summarizeText() {
-    const text = input.value.trim();
-    const amount = parseInt(document.getElementById("summarySize").value);
-
-    if (!text) {
-      output.textContent = "Paste some notes first.";
-      return;
-    }
-
-    const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
-
-    if (sentences.length <= amount) {
-      output.textContent = text;
-      return;
-    }
-
-    const stopWords = new Set([
-      "the","is","a","an","and","or","to","of","in","on","for","with","as","by",
-      "at","from","this","that","it","be","are","was","were","has","have","had",
-      "you","your","we","they","he","she","his","her","their","our","but","not"
-    ]);
-
-    const words = text
-      .toLowerCase()
-      .replace(/[^\w\s]/g, "")
-      .split(/\s+/)
-      .filter(word => word.length > 3 && !stopWords.has(word));
-
-    const frequency = {};
-    words.forEach(word => frequency[word] = (frequency[word] || 0) + 1);
-
-    const scored = sentences.map((sentence, index) => {
-      const sentenceWords = sentence
-        .toLowerCase()
-        .replace(/[^\w\s]/g, "")
-        .split(/\s+/);
-
-      let score = 0;
-      sentenceWords.forEach(word => {
-        if (frequency[word]) score += frequency[word];
-      });
-
-      if (index === 0) score += 3;
-      if (sentence.length < 250) score += 1;
-
-      return { sentence: sentence.trim(), score, index };
-    });
-
-    const best = scored
-      .sort((a, b) => b.score - a.score)
-      .slice(0, amount)
-      .sort((a, b) => a.index - b.index)
-      .map(item => "• " + item.sentence)
-      .join("\n\n");
-
-    output.textContent = best;
-  }
-
-  function copySummary() {
-    navigator.clipboard.writeText(output.textContent);
-    alert("Summary copied!");
-  }
-
-  function downloadSummary() {
-    const blob = new Blob([output.textContent], { type: "text/plain" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "summary.txt";
-    link.click();
-  }
-
-  function clearAll() {
-    input.value = "";
-    output.textContent = "Your summary will appear here.";
-    updateStats();
-  }
+function explode(el){
+el.innerHTML=["★","☁","⚡","✹"][Math.floor(Math.random()*4)];
+el.style.transform="scale(1.25) rotate(15deg)";
+setTimeout(()=>{
+el.style.transform="";
+},300);
+}
 </script>
 
 </body>
